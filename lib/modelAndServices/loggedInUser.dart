@@ -105,8 +105,9 @@ class LoggedInUser extends ChangeNotifier {
       loggedInUser.avatarImage = await imageReference.getDownloadURL();
       await _userDbInstance.doc(loggedInUser.uid).set(
           {'avatarImage': loggedInUser.avatarImage}, SetOptions(merge: true));
+      showSuccessToast(msg: 'Profile picture updated');
     } on FirebaseException catch (e) {
-      print('some error');
+      showFailureToast(msg: 'Profile picture upload failed!');
     }
   }
 }

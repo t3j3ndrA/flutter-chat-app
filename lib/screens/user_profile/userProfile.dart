@@ -1,7 +1,9 @@
 import 'package:chat_application/modelAndServices/loggedInUser.dart';
 import 'package:chat_application/theme/inputDecoration.dart';
 import 'package:chat_application/theme/theme.dart';
+import 'package:chat_application/utils/bottomSheetProfileImagePicker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/src/foundation/key.dart';
@@ -19,10 +21,27 @@ class UserProfile extends StatefulWidget {
 }
 
 class _UserProfileState extends State<UserProfile> {
-  bool isLoading = false, isUploading = false;
+  bool isLoading = false;
+  bool isUploading = false;
   @override
   Widget build(BuildContext context) {
-    XFile? imagePicked;
+    final handleDataUpdate = (value) async {
+      setState(() {
+        isLoading = true;
+      });
+      await value.updateUserData(value);
+      setState(() {
+        isLoading = false;
+      });
+    };
+    void _showBottomSheet() {
+      showModalBottomSheet(
+          context: context,
+          builder: (context) {
+            return BottomSheetImagPicker(loggedInUser: widget.loggedInUser);
+          });
+    }
+
     return MultiProvider(
       providers: [ChangeNotifierProvider.value(value: widget.loggedInUser)],
       child: Consumer<LoggedInUser>(
@@ -53,13 +72,7 @@ class _UserProfileState extends State<UserProfile> {
                             size: 38,
                           ),
                           onPressed: () async {
-                            imagePicked = await ImagePicker()
-                                .pickImage(source: ImageSource.gallery);
-                            if (imagePicked != null) {
-                              widget.loggedInUser.uploadAFile(
-                                  loggedInUser: widget.loggedInUser,
-                                  imageFile: File(imagePicked!.path));
-                            }
+                            _showBottomSheet();
                           },
                         ),
                       )
@@ -92,13 +105,7 @@ class _UserProfileState extends State<UserProfile> {
                     ElevatedButton(
                         style: getButtonStyle(),
                         onPressed: () async {
-                          setState(() {
-                            isLoading = true;
-                          });
-                          await value.updateUserData(value);
-                          setState(() {
-                            isLoading = false;
-                          });
+                          await handleDataUpdate(value);
                         },
                         child: Container(
                           padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
