@@ -29,6 +29,17 @@ class LoggedInUser extends ChangeNotifier {
         .set(data, SetOptions(merge: true));
   }
 
+  listenForLoggedInUser(LoggedInUser loggedInUser) async {
+    _userDbInstance.doc(loggedInUser.uid).snapshots().listen((event) {
+      final newUsersData = event.data() as Map<String, dynamic>;
+      loggedInUser.firstName = newUsersData['firstName'];
+      loggedInUser.lastName = newUsersData['lastName'];
+      loggedInUser.avatarImage = newUsersData['avatarImage'];
+
+      notifyListeners();
+    });
+  }
+
   signInWithEmailAndPassword(LoggedInUser loggedInUser) async {
     try {
       final loggedInData = await _authInstance.signInWithEmailAndPassword(
@@ -44,16 +55,7 @@ class LoggedInUser extends ChangeNotifier {
       return false;
     }
 
-    _userDbInstance.doc(loggedInUser.uid).snapshots().listen((event) {
-      final newUsersData = event.data() as Map<String, dynamic>;
-      loggedInUser.firstName = newUsersData['firstName'];
-      loggedInUser.lastName = newUsersData['lastName'];
-      loggedInUser.avatarImage = newUsersData['avatarImage'];
-      print('new user:##################### ');
-      print(loggedInUser.firstName);
-      print(loggedInUser.avatarImage);
-      notifyListeners();
-    });
+    listenForLoggedInUser(loggedInUser);
     return true;
   }
 
@@ -89,6 +91,7 @@ class LoggedInUser extends ChangeNotifier {
     };
 
     await _userDbInstance.doc(newUser.uid).set(data);
+    listenForLoggedInUser(newUser);
     notifyListeners();
     return true;
   }

@@ -46,82 +46,87 @@ class _UserProfileState extends State<UserProfile> {
       providers: [ChangeNotifierProvider.value(value: widget.loggedInUser)],
       child: Consumer<LoggedInUser>(
         builder: (context, value, child) {
-          return Scaffold(
-            appBar:
-                AppBar(title: Text('Welcome ${widget.loggedInUser.firstName}')),
-            body: Container(
-                padding: EdgeInsets.fromLTRB(20, 30, 20, 30),
-                child: Form(
-                    child: Column(
-                  children: [
-                    Stack(children: [
-                      Center(
-                        child: CircleAvatar(
-                          foregroundImage: NetworkImage(value.avatarImage),
-                          radius: 50,
+          return GestureDetector(
+            onTap: () {
+              FocusScope.of(context).requestFocus(new FocusNode());
+            },
+            child: Scaffold(
+              appBar: AppBar(
+                  title: Text('Welcome ${widget.loggedInUser.firstName}')),
+              body: Container(
+                  padding: EdgeInsets.fromLTRB(20, 30, 20, 30),
+                  child: Form(
+                      child: Column(
+                    children: [
+                      Stack(children: [
+                        Center(
+                          child: CircleAvatar(
+                            foregroundImage: NetworkImage(value.avatarImage),
+                            radius: 50,
+                          ),
                         ),
+                        Positioned(
+                          bottom: 0,
+                          left: ((MediaQuery.of(context).size.width) / 2)
+                              .toDouble(),
+                          child: IconButton(
+                            icon: Icon(
+                              Icons.image,
+                              color: MyThemeData().titlePurple,
+                              size: 38,
+                            ),
+                            onPressed: () async {
+                              _showBottomSheet();
+                            },
+                          ),
+                        )
+                      ]),
+                      SizedBox(height: 45),
+                      TextFormField(
+                        initialValue: value.firstName,
+                        decoration: getInputDecoration()
+                            .copyWith(labelText: 'First Name'),
+                        onChanged: (val) => setState(() {
+                          value.firstName = val;
+                        }),
+                        validator: (val) =>
+                            val == '' ? 'First Name cannot be empty' : null,
                       ),
-                      Positioned(
-                        bottom: 0,
-                        left: ((MediaQuery.of(context).size.width) / 2)
-                            .toDouble(),
-                        child: IconButton(
-                          icon: Icon(
-                            Icons.image,
-                            color: MyThemeData().titlePurple,
-                            size: 38,
-                          ),
+                      SizedBox(height: 25),
+                      TextFormField(
+                        initialValue: value.lastName,
+                        decoration: getInputDecoration()
+                            .copyWith(labelText: 'Last Name'),
+                        onChanged: (val) => setState(() {
+                          value.lastName = val;
+                        }),
+                        validator: (val) =>
+                            val == '' ? 'Last Name cannot be empty' : null,
+                      ),
+                      SizedBox(
+                        height: 25,
+                      ),
+                      ElevatedButton(
+                          style: getButtonStyle(),
                           onPressed: () async {
-                            _showBottomSheet();
+                            await handleDataUpdate(value);
                           },
-                        ),
-                      )
-                    ]),
-                    SizedBox(height: 45),
-                    TextFormField(
-                      initialValue: value.firstName,
-                      decoration: getInputDecoration()
-                          .copyWith(labelText: 'First Name'),
-                      onChanged: (val) => setState(() {
-                        value.firstName = val;
-                      }),
-                      validator: (val) =>
-                          val == '' ? 'First Name cannot be empty' : null,
-                    ),
-                    SizedBox(height: 25),
-                    TextFormField(
-                      initialValue: value.lastName,
-                      decoration:
-                          getInputDecoration().copyWith(labelText: 'Last Name'),
-                      onChanged: (val) => setState(() {
-                        value.lastName = val;
-                      }),
-                      validator: (val) =>
-                          val == '' ? 'Last Name cannot be empty' : null,
-                    ),
-                    SizedBox(
-                      height: 40,
-                    ),
-                    ElevatedButton(
-                        style: getButtonStyle(),
-                        onPressed: () async {
-                          await handleDataUpdate(value);
-                        },
-                        child: Container(
-                          padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-                          width: 130,
-                          child: Center(
-                            child: !isLoading
-                                ? Text('Update',
-                                    style: MyThemeData()
-                                        .getTheme()
-                                        .textTheme
-                                        .button)
-                                : LoadingSpinner(),
-                          ),
-                        )),
-                  ],
-                ))),
+                          child: Container(
+                            height: 50,
+                            padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+                            child: Center(
+                              child: !isLoading
+                                  ? Text('Update',
+                                      style: MyThemeData()
+                                          .getTheme()
+                                          .textTheme
+                                          .button)
+                                  : LoadingSpinner(),
+                            ),
+                          )),
+                    ],
+                  ))),
+            ),
           );
         },
       ),

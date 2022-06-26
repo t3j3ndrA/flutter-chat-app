@@ -1,3 +1,4 @@
+import 'package:chat_application/modelAndServices/conversations.dart';
 import 'package:chat_application/modelAndServices/loggedInUser.dart';
 import 'package:chat_application/utils/spinner.dart';
 import 'package:flutter/material.dart';
@@ -16,18 +17,32 @@ class SignInScreen extends StatefulWidget {
 
 class _SignInScreenState extends State<SignInScreen> {
   bool isLoading = false;
+  final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     final LoggedInUser loggedInUser = Provider.of<LoggedInUser>(context);
     return Scaffold(
-        appBar: AppBar(title: Text('Sign In')),
+        appBar: AppBar(
+          title: Text('Sign In'),
+          actions: [
+            IconButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/register');
+                },
+                icon: Icon(Icons.person))
+          ],
+        ),
         body: Container(
           padding: EdgeInsets.fromLTRB(20, 20, 20, 0),
           child: Form(
+            key: _formKey,
             child: Column(children: [
               TextFormField(
                   decoration:
                       getInputDecoration().copyWith(labelText: 'E-mail'),
+                  validator: (val) {
+                    return val == '' ? 'E-mail cannot be empty' : null;
+                  },
                   onChanged: (val) => setState(() {
                         loggedInUser.eMail = val;
                       })),
@@ -36,6 +51,9 @@ class _SignInScreenState extends State<SignInScreen> {
                   obscureText: true,
                   decoration:
                       getInputDecoration().copyWith(labelText: 'Password'),
+                  validator: (val) {
+                    return val == '' ? 'Password cannot be empty' : null;
+                  },
                   onChanged: (val) => setState(() {
                         loggedInUser.password = val;
                       })),
@@ -43,18 +61,26 @@ class _SignInScreenState extends State<SignInScreen> {
               ElevatedButton(
                   style: getButtonStyle(),
                   onPressed: () async {
-                    setState(() {
-                      isLoading = true;
-                    });
-                    final isLoggedInSuccess = await loggedInUser
-                        .signInWithEmailAndPassword(loggedInUser);
-                    setState(() {
-                      isLoading = false;
-                    });
+                    if (_formKey.currentState!.validate()) {
+                      setState(() {
+                        isLoading = true;
+                      });
+                      final isLoggedInSuccess = await loggedInUser
+                          .signInWithEmailAndPassword(loggedInUser);
+                      // Navigator.pushNamed(context, "/home");
+                      final conversations =
+                          Provider.of<Conversations>(context, listen: false);
+                      conversations.listenForAllConversations(
+                          loggedInUser: loggedInUser,
+                          conversations: conversations);
+                      setState(() {
+                        isLoading = false;
+                      });
+                    }
                   },
                   child: Container(
                     padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-                    width: 130,
+                    height: 50,
                     child: Center(
                       child: !isLoading
                           ? Text('Sign In',
