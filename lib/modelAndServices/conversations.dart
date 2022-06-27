@@ -1,4 +1,5 @@
 import 'package:chat_application/modelAndServices/loggedInUser.dart';
+import 'package:chat_application/modelAndServices/messageModel.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -44,6 +45,30 @@ class Conversations extends ChangeNotifier {
       }
       conversations.homeScreenAllMessagesList = newList;
       notifyListeners();
+    });
+  }
+
+  sendNewMessage({required Message message}) async {
+    Map<String, dynamic> messageData = {
+      'message': message.message,
+      'type': message.type,
+      'sendersUid': message.sendersUid,
+      'sendAt': DateTime.now(),
+    };
+
+    // Added Entry to senders Document
+    await _messageDbInstance.doc(message.sendersUid).update({
+      '${message.reciversUid}': FieldValue.arrayUnion([messageData])
+    });
+
+    // make an entry in recivers side to avoid document not found option
+    await _messageDbInstance.doc(message.reciversUid).set(
+        {'${message.sendersUid}': FieldValue.arrayUnion([])},
+        SetOptions(merge: true));
+
+    // Adding Entry to recivers Document
+    await _messageDbInstance.doc(message.reciversUid).update({
+      '${message.sendersUid}': FieldValue.arrayUnion([messageData])
     });
   }
 

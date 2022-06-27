@@ -1,6 +1,7 @@
 import 'package:chat_application/mainWrapper.dart';
 import 'package:chat_application/modelAndServices/conversations.dart';
 import 'package:chat_application/modelAndServices/loggedInUser.dart';
+import 'package:chat_application/modelAndServices/messageModel.dart';
 import 'package:chat_application/screens/registration/ragistration_screen.dart';
 import 'package:chat_application/screens/signIn/signIn.dart';
 import 'package:chat_application/screens/user_profile/fakeUser.dart';
@@ -32,6 +33,7 @@ class MainWidget extends StatelessWidget {
       providers: [
         ChangeNotifierProvider<LoggedInUser>.value(value: loggedInUser),
         ChangeNotifierProvider<Conversations>.value(value: Conversations()),
+        ChangeNotifierProvider<Message>.value(value: Message()),
       ],
       child: MainWrapper(),
     );

@@ -20,7 +20,6 @@ class _HomeScreenState extends State<HomeScreen> {
     final Conversations conversations = Provider.of<Conversations>(context);
     final allUsersList = conversations.homeScreenAllMessagesList;
     final allConversations = conversations.allConversations;
-
     showNewChatModel() {
       showModalBottomSheet(
           context: context,

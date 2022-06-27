@@ -68,12 +68,6 @@ class _SignInScreenState extends State<SignInScreen> {
                       final isLoggedInSuccess = await loggedInUser
                           .signInWithEmailAndPassword(loggedInUser);
 
-                      // Provider.of<Conversations>(context, listen: false)
-                      //     .updateLoggedInId(
-                      //         newId: Provider.of<LoggedInUser>(context,
-                      //                 listen: false)
-                      //             .uid);
-
                       setState(() {
                         isLoading = false;
                       });
@@ -88,6 +82,20 @@ class _SignInScreenState extends State<SignInScreen> {
                               style: MyThemeData().getTheme().textTheme.button)
                           : LoadingSpinner(),
                     ),
+                  )),
+              getTopPadding(),
+              ElevatedButton(
+                  style: getButtonStyle(),
+                  onPressed: () {
+                    Navigator.pushNamedAndRemoveUntil(
+                        context, '/register', (route) => false);
+                  },
+                  child: Container(
+                    padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+                    height: 50,
+                    child: Center(
+                        child: Text('Don\'t have an account',
+                            style: MyThemeData().getTheme().textTheme.button)),
                   )),
             ]),
           ),
