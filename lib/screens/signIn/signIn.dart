@@ -67,12 +67,13 @@ class _SignInScreenState extends State<SignInScreen> {
                       });
                       final isLoggedInSuccess = await loggedInUser
                           .signInWithEmailAndPassword(loggedInUser);
-                      // Navigator.pushNamed(context, "/home");
-                      final conversations =
-                          Provider.of<Conversations>(context, listen: false);
-                      conversations.listenForAllConversations(
-                          loggedInUser: loggedInUser,
-                          conversations: conversations);
+
+                      // Provider.of<Conversations>(context, listen: false)
+                      //     .updateLoggedInId(
+                      //         newId: Provider.of<LoggedInUser>(context,
+                      //                 listen: false)
+                      //             .uid);
+
                       setState(() {
                         isLoading = false;
                       });

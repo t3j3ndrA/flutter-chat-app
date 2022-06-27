@@ -13,16 +13,16 @@ class Conversations extends ChangeNotifier {
   Map<String, dynamic> allConversations = {};
   List<Map<String, dynamic>> homeScreenAllMessagesList = [];
 
+  noticeStatesUpdated() {
+    notifyListeners();
+  }
+
   getUserByUid(String uid) async {
     final data = await _userDbInstance.doc(uid).get();
     return data.data() as Map;
   }
 
-  listenForAllConversations(
-      {required LoggedInUser loggedInUser,
-      required Conversations conversations}) async {
-    conversations.loggedInUserId = loggedInUser.uid;
-
+  listenForAllConversations({required Conversations conversations}) async {
     _messageDbInstance
         .doc(conversations.loggedInUserId)
         .snapshots()
@@ -35,13 +35,21 @@ class Conversations extends ChangeNotifier {
 
       for (var entry in conversations.allConversations.entries) {
         final user = await getUserByUid(entry.key);
-        newList.add(<String, dynamic>{'firstName': user['firstName']});
+        newList.add(<String, dynamic>{
+          'uid': user['uid'],
+          'firstName': user['firstName'],
+          'lastName': user['lastName'],
+          'avatarImage': user['avatarImage'],
+        });
       }
       conversations.homeScreenAllMessagesList = newList;
-      print('from listener : ');
-      print(conversations.homeScreenAllMessagesList);
       notifyListeners();
     });
+  }
+
+  updateLoggedInId({required String newId}) {
+    this.loggedInUserId = newId;
+    listenForAllConversations(conversations: this);
   }
 
   startNewConversationByEmail(

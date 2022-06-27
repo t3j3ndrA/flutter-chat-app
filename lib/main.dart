@@ -1,3 +1,4 @@
+import 'package:chat_application/mainWrapper.dart';
 import 'package:chat_application/modelAndServices/conversations.dart';
 import 'package:chat_application/modelAndServices/loggedInUser.dart';
 import 'package:chat_application/screens/registration/ragistration_screen.dart';
@@ -32,27 +33,7 @@ class MainWidget extends StatelessWidget {
         ChangeNotifierProvider<LoggedInUser>.value(value: loggedInUser),
         ChangeNotifierProvider<Conversations>.value(value: Conversations()),
       ],
-      child: MaterialApp(
-        theme: MyThemeData().getTheme().copyWith(
-              textTheme: GoogleFonts.latoTextTheme(
-                Theme.of(context).textTheme,
-              ),
-            ),
-        debugShowCheckedModeBanner: false,
-        routes: {
-          '/home': (context) => const HomeScreen(),
-          '/wrapper': (context) => const Wrapper(),
-          '/register': (context) => const RegistrationScreen(),
-          '/signIn': (context) => const SignInScreen(),
-          '/userProfile': (context) => UserProfile(
-                loggedInUser: loggedInUser,
-              ),
-          '/fakeProfile': (context) => FakeProfile(
-                loggedInUser: loggedInUser,
-              ),
-        },
-        home: Wrapper(),
-      ),
+      child: MainWrapper(),
     );
   }
 }

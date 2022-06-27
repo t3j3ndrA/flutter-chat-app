@@ -91,9 +91,11 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                           final conversations = Provider.of<Conversations>(
                               context,
                               listen: false);
-                          conversations.listenForAllConversations(
-                              loggedInUser: newUser,
-                              conversations: conversations);
+                          // Provider.of<Conversations>(context, listen: false)
+                          //     .updateLoggedInId(
+                          //         newId: Provider.of<LoggedInUser>(context,
+                          //                 listen: false)
+                          //             .uid);
                           Navigator.pushNamedAndRemoveUntil(
                               context, '/home', (route) => false);
                         }
