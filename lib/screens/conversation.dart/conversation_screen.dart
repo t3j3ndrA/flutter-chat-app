@@ -101,6 +101,9 @@ class _ConversationScreenState extends State<ConversationScreen> {
                             color: messages[index]['sendersUid'] == user['uid']
                                 ? Colors.white
                                 : Color.fromARGB(255, 241, 241, 241),
+                            border: messages[index]['sendersUid'] == user['uid']
+                                ? Border.all(width: 0, color: Colors.brown)
+                                : null,
                             borderRadius:
                                 BorderRadius.all(Radius.elliptical(60, 60)),
                           ),
