@@ -74,7 +74,12 @@ class _HomeScreenState extends State<HomeScreen> {
                       radius: 30,
                     ),
                     minVerticalPadding: 4,
-                    subtitle: Text('Hi...'),
+                    subtitle: allConversations[allUsersList[index]['uid']]
+                                .length >
+                            0
+                        ? Text(
+                            '${allConversations[allUsersList[index]['uid']][allConversations[allUsersList[index]['uid']].length - 1]['message']}')
+                        : Text(''),
                     title: Text(
                         '${allUsersList[index]['firstName'] + " " + allUsersList[index]['lastName']}'),
                   ),
