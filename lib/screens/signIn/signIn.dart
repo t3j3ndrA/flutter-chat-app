@@ -87,8 +87,7 @@ class _SignInScreenState extends State<SignInScreen> {
               ElevatedButton(
                   style: getButtonStyle(),
                   onPressed: () {
-                    Navigator.pushNamedAndRemoveUntil(
-                        context, '/register', (route) => false);
+                    Navigator.pushNamed(context, '/register');
                   },
                   child: Container(
                     padding: EdgeInsets.fromLTRB(10, 10, 10, 10),

@@ -91,11 +91,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                           final conversations = Provider.of<Conversations>(
                               context,
                               listen: false);
-                          // Provider.of<Conversations>(context, listen: false)
-                          //     .updateLoggedInId(
-                          //         newId: Provider.of<LoggedInUser>(context,
-                          //                 listen: false)
-                          //             .uid);
+
                           Navigator.pushNamedAndRemoveUntil(
                               context, '/home', (route) => false);
                         }
@@ -103,7 +99,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     },
                     child: Container(
                       padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-                      width: 130,
                       child: Center(
                         child: !isLoading
                             ? Text('Register',
